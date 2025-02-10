@@ -17,21 +17,7 @@ import { RegistroPresenca } from "@/components/presenca/RegistroPresenca";
 import { AniversariantesList } from "@/components/aniversariantes/AniversariantesList";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Cores para o gráfico de pizza
-const COLORS = [
-  "#0088FE",
-  "#00C49F",
-  "#FFBB28",
-  "#FF8042",
-  "#8884D8",
-  "#82CA9D",
-  "#FFC658",
-  "#FF6B6B",
-  "#4ECDC4",
-  "#45B7D1",
-];
-
-function ErrorFallback({ error }) {
+function ErrorFallback({ error }: { error: Error }) {
   return (
     <div className="flex items-center justify-center min-h-screen p-4">
       <div className="text-center">
@@ -83,7 +69,6 @@ export default function App() {
     </ErrorBoundary>
   );
 }
-
 const Home = () => {
   const {
     getVisitantesCount,
@@ -100,7 +85,7 @@ const Home = () => {
     totalMembros: 0,
     membrosAtivos: 0,
   });
-  const [chartData, setChartData] = useState({
+  const [chartData, setChartData] = useState<ChartData>({
     visitantesPorMes: [],
     membrosPorMinisterio: [],
   });
@@ -244,3 +229,8 @@ const CadastroVisitante = () => <VisitanteForm />;
 const ListaVisitantes = () => <VisitantesList />;
 const CadastroMembro = () => <MembroForm />;
 const ListaMembros = () => <MembrosList />;
+
+interface ChartData {
+  visitantesPorMes: { mes: string; quantidade: number }[];
+  membrosPorMinisterio: { ministerio: string; quantidade: number }[];
+}

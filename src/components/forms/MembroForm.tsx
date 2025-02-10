@@ -20,6 +20,7 @@ import { showToast } from "@/components/ui/custom-toast";
 import { DuplicataDialog } from "@/components/ui/duplicata-dialog";
 import { MINISTERIOS } from "@/config/ministerios";
 import { DocumentData } from "firebase/firestore";
+import { PessoaExistente } from "@/types";
 
 interface MembroData {
   nome: string;
@@ -57,7 +58,6 @@ export default function MembroForm({
   const [loadingCEP, setLoadingCEP] = useState(false);
   const [enderecoManual, setEnderecoManual] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [formDataToSubmit, setFormDataToSubmit] = useState<any>(null);
   const [foto, setFoto] = useState<File | null>(null);
   const [fotoPreview, setFotoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -85,7 +85,7 @@ export default function MembroForm({
   };
 
   const [formData, setFormData] = useState<MembroData>(
-    initialData || initialDataForm
+    (initialData as MembroData) || initialDataForm
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -164,7 +164,6 @@ export default function MembroForm({
       console.error("Erro ao salvar membro:", error);
       showToast({
         title: `Erro ao ${mode === "edit" ? "atualizar" : "cadastrar"} membro`,
-        description: "Tente novamente mais tarde",
         type: "error",
       });
     } finally {
@@ -227,16 +226,6 @@ export default function MembroForm({
         setEnderecoManual(true);
       }
     }
-  };
-
-  const clearAddressFields = () => {
-    setFormData((prev) => ({
-      ...prev,
-      logradouro: "",
-      bairro: "",
-      cidade: "",
-      uf: "",
-    }));
   };
 
   const handleClear = () => {
@@ -321,6 +310,14 @@ export default function MembroForm({
         )}
       </div>
     );
+  };
+
+  const handleConfirmSubmit = () => {
+    handleSubmit({ preventDefault: () => {} } as React.FormEvent);
+  };
+
+  const handleDuplicataConfirm = () => {
+    handleSubmit({ preventDefault: () => {} } as React.FormEvent);
   };
 
   return (
@@ -701,16 +698,16 @@ export default function MembroForm({
       <ConfirmationDialog
         open={showConfirmation}
         onOpenChange={setShowConfirmation}
-        title="Confirmar Cadastro"
+        title="Confirmar cadastro"
         description="Tem certeza que deseja cadastrar este membro?"
-        onConfirm={handleSubmit}
+        onConfirm={handleConfirmSubmit}
       />
 
       <DuplicataDialog
         open={showDuplicataDialog}
         onOpenChange={setShowDuplicataDialog}
         pessoasEncontradas={pessoasEncontradas}
-        onConfirm={handleSubmit}
+        onConfirm={handleDuplicataConfirm}
       />
     </div>
   );

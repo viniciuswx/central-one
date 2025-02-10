@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode } from "react";
-import { db, auth, storage } from "../config/firebase";
+import { db, storage } from "../config/firebase";
 import {
   collection,
   addDoc,
@@ -63,6 +63,7 @@ interface FirebaseContextType {
     visita: VisitaData
   ) => Promise<void>;
   getHistoricoVisitas: (visitanteId: string) => Promise<VisitaData[]>;
+  addVisita: (visitanteId: string, visita: VisitaData) => Promise<void>;
 
   // Funções para upload de foto
   uploadFoto: (file: File, membroId: string) => Promise<string>;
@@ -84,6 +85,9 @@ interface FirebaseContextType {
   // Funções para exclusão e atualização de membro
   deleteMembro: (id: string) => Promise<void>;
   updateMembro: (id: string, data: any) => Promise<void>;
+
+  // Funções para busca
+  buscarPessoa: (termo: string) => Promise<AniversarianteData[]>;
 }
 
 interface VisitaData {
@@ -297,12 +301,19 @@ export function FirebaseProvider({ children }: { children: ReactNode }) {
 
     const membros = membrosSnapshot.docs.map((doc) => ({
       id: doc.id,
+      nome: doc.data().nome,
+      dataNascimento: doc.data().dataNascimento,
+      foto: doc.data().foto,
+      ministerios: doc.data().ministerios,
       ...doc.data(),
       tipo: "membro" as const,
     }));
 
     const visitantes = visitantesSnapshot.docs.map((doc) => ({
       id: doc.id,
+      nome: doc.data().nome,
+      dataNascimento: doc.data().dataNascimento,
+      foto: doc.data().foto,
       ...doc.data(),
       tipo: "visitante" as const,
     }));
@@ -310,7 +321,7 @@ export function FirebaseProvider({ children }: { children: ReactNode }) {
     const mesAtual = new Date().getMonth() + 1;
 
     const aniversariantes = [...membros, ...visitantes]
-      .filter((pessoa) => {
+      .filter((pessoa: DocumentData & { tipo: string; id: string }) => {
         if (!pessoa.dataNascimento) return false;
         const mesNascimento =
           new Date(pessoa.dataNascimento + "T12:00:00").getMonth() + 1;
@@ -411,6 +422,7 @@ export function FirebaseProvider({ children }: { children: ReactNode }) {
       const querySnapshot = await getDocs(q);
       let membros = querySnapshot.docs.map((doc) => ({
         id: doc.id,
+        nome: doc.data().nome,
         ...doc.data(),
       }));
 
@@ -448,6 +460,66 @@ export function FirebaseProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const addVisita = async (visitanteId: string, visita: VisitaData) => {
+    const visitanteRef = doc(db, "visitantes", visitanteId);
+    const visitanteDoc = await getDoc(visitanteRef);
+
+    if (visitanteDoc.exists()) {
+      const historico = visitanteDoc.data().historico || [];
+      await updateDoc(visitanteRef, {
+        historico: [...historico, visita],
+      });
+    }
+  };
+
+  const buscarPessoa = async (termo: string) => {
+    const pessoasEncontradas: AniversarianteData[] = [];
+    const termoNormalizado = termo.toLowerCase().trim();
+
+    // Busca em membros
+    const membrosSnapshot = await getDocs(collection(db, "membros"));
+    membrosSnapshot.docs.forEach((doc) => {
+      const membro = doc.data();
+      const membroNome = membro.nome.toLowerCase().trim();
+
+      if (
+        membroNome === termoNormalizado ||
+        membroNome.includes(termoNormalizado)
+      ) {
+        pessoasEncontradas.push({
+          id: doc.id,
+          nome: membro.nome,
+          dataNascimento: membro.dataNascimento,
+          foto: membro.foto,
+          ministerios: membro.ministerios,
+          tipo: "membro" as const,
+        });
+      }
+    });
+
+    // Busca em visitantes
+    const visitantesSnapshot = await getDocs(collection(db, "visitantes"));
+    visitantesSnapshot.docs.forEach((doc) => {
+      const visitante = doc.data();
+      const visitanteNome = visitante.nome.toLowerCase().trim();
+
+      if (
+        visitanteNome === termoNormalizado ||
+        visitanteNome.includes(termoNormalizado)
+      ) {
+        pessoasEncontradas.push({
+          id: doc.id,
+          nome: visitante.nome,
+          dataNascimento: visitante.dataNascimento,
+          foto: visitante.foto,
+          tipo: "visitante" as const,
+        });
+      }
+    });
+
+    return pessoasEncontradas;
+  };
+
   const value = {
     addVisitante,
     getVisitantes,
@@ -469,6 +541,8 @@ export function FirebaseProvider({ children }: { children: ReactNode }) {
     getMembrosComFiltro,
     deleteMembro,
     updateMembro,
+    addVisita,
+    buscarPessoa,
   };
 
   return (

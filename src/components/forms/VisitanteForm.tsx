@@ -23,6 +23,7 @@ import {
 } from "@/lib/formatters";
 import { showToast } from "@/components/ui/custom-toast";
 import { DuplicataDialog } from "@/components/ui/duplicata-dialog";
+import { PessoaExistente } from "@/types";
 
 interface VisitanteData {
   nome: string;
@@ -85,6 +86,7 @@ export default function VisitanteForm() {
             observacoes: formData.observacoes,
           },
         ],
+        foto: foto,
       };
 
       setFormDataToSubmit(dataToSubmit);
@@ -139,10 +141,6 @@ export default function VisitanteForm() {
     }
 
     setFormData((prev) => ({ ...prev, [name]: formattedValue }));
-  };
-
-  const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, comoSoube: value }));
   };
 
   const handleClear = () => {

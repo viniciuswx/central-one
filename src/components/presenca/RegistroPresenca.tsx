@@ -40,7 +40,6 @@ export function RegistroPresenca() {
         console.error("Erro ao buscar membros:", error);
         showToast({
           title: "Erro ao carregar membros",
-          description: "Tente novamente mais tarde",
           type: "error",
         });
       } finally {
@@ -62,7 +61,6 @@ export function RegistroPresenca() {
       console.error("Erro ao buscar pessoa:", error);
       showToast({
         title: "Erro ao buscar pessoa",
-        description: "Tente novamente",
         type: "error",
       });
     } finally {
@@ -93,8 +91,7 @@ export function RegistroPresenca() {
       }
 
       showToast({
-        title: "Presença registrada!",
-        description: `${pessoa.nome} registrado com sucesso`,
+        title: `Presença registrada: ${pessoa.nome}`,
         type: "success",
       });
 
@@ -105,7 +102,6 @@ export function RegistroPresenca() {
       console.error("Erro ao registrar presença:", error);
       showToast({
         title: "Erro ao registrar presença",
-        description: "Tente novamente",
         type: "error",
       });
     } finally {
@@ -134,7 +130,7 @@ export function RegistroPresenca() {
     membro.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const MembroCard = ({ membro }) => {
+  const MembroCard = ({ membro }: { membro: DocumentData }) => {
     const ultimaPresenca = presencas[membro.id]?.[0];
     const hoje = new Date().toISOString().split("T")[0];
     const jaRegistrouHoje = ultimaPresenca === hoje;

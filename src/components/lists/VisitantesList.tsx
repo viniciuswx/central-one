@@ -164,7 +164,7 @@ export default function VisitantesList() {
     setShowHistory(true);
   };
 
-  const MobileCard = ({ visitante }) => (
+  const MobileCard = ({ visitante }: { visitante: DocumentData }) => (
     <div className="p-4 border border-zinc-200/50 dark:border-zinc-800/50 rounded-lg space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">

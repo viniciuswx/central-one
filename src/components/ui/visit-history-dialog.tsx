@@ -56,7 +56,6 @@ export function VisitHistoryDialog({
       console.error("Erro ao registrar visita:", error);
       showToast({
         title: "Erro ao registrar visita",
-        description: "Tente novamente mais tarde",
         type: "error",
       });
     } finally {

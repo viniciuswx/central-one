@@ -63,28 +63,28 @@ export default function MembrosList() {
   const [membroToDelete, setMembroToDelete] = useState<string | null>(null);
   const [membroToEdit, setMembroToEdit] = useState<DocumentData | null>(null);
 
-  useEffect(() => {
-    const fetchMembros = async () => {
-      setLoading(true);
-      try {
-        const data = await getMembrosComFiltro({
-          ministerio:
-            filtros.ministerio === "todos" ? undefined : filtros.ministerio,
-          status:
-            filtros.status === "todos"
-              ? undefined
-              : (filtros.status as "ativo" | "inativo" | undefined),
-          busca: filtros.busca || undefined,
-        });
-        setMembros(data);
-      } catch (error) {
-        console.error("Erro ao buscar membros:", error);
-        alert("Erro ao carregar a lista de membros.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchMembros = async () => {
+    setLoading(true);
+    try {
+      const data = await getMembrosComFiltro({
+        ministerio:
+          filtros.ministerio === "todos" ? undefined : filtros.ministerio,
+        status:
+          filtros.status === "todos"
+            ? undefined
+            : (filtros.status as "ativo" | "inativo" | undefined),
+        busca: filtros.busca || undefined,
+      });
+      setMembros(data);
+    } catch (error) {
+      console.error("Erro ao buscar membros:", error);
+      alert("Erro ao carregar a lista de membros.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchMembros();
   }, [getMembrosComFiltro, filtros]);
 
@@ -185,7 +185,6 @@ export default function MembrosList() {
       console.error("Erro ao exportar:", error);
       showToast({
         title: "Erro ao exportar lista",
-        description: "Tente novamente mais tarde",
         type: "error",
       });
     }
@@ -201,21 +200,11 @@ export default function MembrosList() {
         type: "success",
       });
       // Recarrega a lista
-      const data = await getMembrosComFiltro({
-        ministerio:
-          filtros.ministerio === "todos" ? undefined : filtros.ministerio,
-        status:
-          filtros.status === "todos"
-            ? undefined
-            : (filtros.status as "ativo" | "inativo" | undefined),
-        busca: filtros.busca || undefined,
-      });
-      setMembros(data);
+      fetchMembros();
     } catch (error) {
       console.error("Erro ao excluir membro:", error);
       showToast({
         title: "Erro ao excluir membro",
-        description: "Tente novamente mais tarde",
         type: "error",
       });
     } finally {
@@ -223,7 +212,7 @@ export default function MembrosList() {
     }
   };
 
-  const MobileCard = ({ membro }) => (
+  const MobileCard = ({ membro }: { membro: DocumentData }) => (
     <div className="p-4 border border-zinc-200/50 dark:border-zinc-800/50 rounded-lg space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">

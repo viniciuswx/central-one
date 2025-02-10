@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useFirebase } from "@/contexts/FirebaseContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, Cake, Loader2 } from "lucide-react";
-import { formatDate } from "@/lib/formatters";
 
 interface Aniversariante {
   id: string;
