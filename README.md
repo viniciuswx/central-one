@@ -76,5 +76,5 @@ Desenvolvido por [Vinicius Graciano](https://github.com/viniciuswx)
 ---
 
 <p align="center">
-  Feito com ❤️ para a [Central One](https://www.instagram.com/centralone_/)
+  Feito com ❤️ para Central One.
 </p>
