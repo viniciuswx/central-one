@@ -1,51 +1,80 @@
-# React + TypeScript + Vite
+# Central One - Sistema de Gestão
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+  <img src="src/assets/centralone.jpg" alt="Central One Logo" width="200"/>
+</p>
 
-Currently, two official plugins are available:
+## 📋 Sobre
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Central One é um sistema de gestão desenvolvido para gerenciar membros, visitantes e presenças de forma eficiente e intuitiva.
 
-## Expanding the ESLint configuration
+## ✨ Funcionalidades
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- 👥 **Gestão de Membros e Visitantes**
 
-- Configure the top-level `parserOptions` property like this:
+  - Cadastro completo com informações pessoais
+  - Upload de fotos
+  - Verificação de duplicatas
+  - Histórico de visitas
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- 📊 **Dashboard**
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+  - Métricas em tempo real
+  - Gráficos de crescimento
+  - Distribuição por ministérios
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- ✅ **Controle de Presenças**
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
-# vite-react-tailwindcss-shadcn-project-starter
+  - Registro rápido de presenças
+  - Histórico por pessoa
+  - Busca integrada
+
+- 🎂 **Aniversariantes**
+  - Lista mensal
+  - Notificações automáticas
+  - Filtros personalizados
+
+## 🛠️ Tecnologias
+
+- [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Firebase](https://firebase.google.com/)
+- [React Router](https://reactrouter.com/)
+- [Lucide Icons](https://lucide.dev/)
+
+## 📱 Layout Responsivo
+
+O sistema é totalmente responsivo, adaptando-se a diferentes tamanhos de tela:
+
+- 💻 Desktop
+- 📱 Tablet
+- 📱 Mobile
+
+## 🌙 Tema Dark/Light
+
+Suporte a tema claro e escuro com persistência da preferência do usuário.
+
+## 🤝 Contribuindo
+
+Contribuições são sempre bem-vindas! Sinta-se à vontade para:
+
+1. Reportar bugs
+2. Sugerir novas funcionalidades
+3. Enviar pull requests
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 👨‍💻 Autor
+
+Desenvolvido por [Vinicius Graciano](https://github.com/viniciuswx)
+
+---
+
+<p align="center">
+  Feito com ❤️ para a [Central One](https://www.instagram.com/centralone_/)
+</p>
