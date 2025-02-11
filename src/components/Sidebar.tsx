@@ -8,6 +8,8 @@ import {
   ClipboardCheck,
   Cake,
   Menu,
+  LogOut,
+  Settings,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -15,11 +17,14 @@ import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import logoCO from "@/assets/centralone.jpg";
 import { Logo } from "./ui/logo";
+import { auth } from "@/config/firebase";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Sidebar() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const { hasPermission } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,16 +40,19 @@ export default function Sidebar() {
       title: "Dashboard",
       icon: LayoutDashboard,
       path: "/",
+      show: hasPermission("lider"),
     },
     {
       title: "Registrar Presença",
       icon: ClipboardCheck,
       path: "/presenca",
+      show: true,
     },
     {
       title: "Aniversariantes",
       icon: Cake,
       path: "/aniversariantes",
+      show: hasPermission("lider"),
     },
     {
       title: "Visitantes",
@@ -54,13 +62,16 @@ export default function Sidebar() {
           title: "Cadastrar",
           icon: UserPlus,
           path: "/visitantes/cadastro",
+          show: hasPermission("voluntario"),
         },
         {
           title: "Listar",
           icon: List,
           path: "/visitantes/lista",
+          show: hasPermission("lider"),
         },
       ],
+      show: true,
     },
     {
       title: "Membros",
@@ -70,15 +81,32 @@ export default function Sidebar() {
           title: "Cadastrar",
           icon: UserPlus,
           path: "/membros/cadastro",
+          show: hasPermission("voluntario"),
         },
         {
           title: "Listar",
           icon: List,
           path: "/membros/lista",
+          show: hasPermission("lider"),
         },
       ],
+      show: true,
+    },
+    {
+      title: "Administração",
+      icon: Settings,
+      path: "/admin",
+      show: hasPermission("lider"),
     },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
+  };
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
@@ -87,33 +115,35 @@ export default function Sidebar() {
       </div>
       <div className="flex-1 overflow-y-auto">
         <nav className="p-3 space-y-1">
-          {menuItems.map((item, index) => (
-            <div key={index}>
-              {item.submenu ? (
-                <div className="pt-3">
-                  <h2 className="mb-2 px-4 text-zinc-400 text-xs uppercase tracking-wider font-medium">
-                    {item.title}
-                  </h2>
-                  <div className="space-y-1">
-                    {item.submenu.map((subItem, subIndex) => (
-                      <MenuItem
-                        key={subIndex}
-                        {...subItem}
-                        isActive={location.pathname === subItem.path}
-                        onClick={() => setOpen(false)}
-                      />
-                    ))}
+          {menuItems
+            .filter((item) => item.show)
+            .map((item, index) => (
+              <div key={index}>
+                {item.submenu ? (
+                  <div className="pt-3">
+                    <h2 className="mb-2 px-4 text-zinc-400 text-xs uppercase tracking-wider font-medium">
+                      {item.title}
+                    </h2>
+                    <div className="space-y-1">
+                      {item.submenu.map((subItem, subIndex) => (
+                        <MenuItem
+                          key={subIndex}
+                          {...subItem}
+                          isActive={location.pathname === subItem.path}
+                          onClick={() => setOpen(false)}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <MenuItem
-                  {...item}
-                  isActive={location.pathname === item.path}
-                  onClick={() => setOpen(false)}
-                />
-              )}
-            </div>
-          ))}
+                ) : (
+                  <MenuItem
+                    {...item}
+                    isActive={location.pathname === item.path}
+                    onClick={() => setOpen(false)}
+                  />
+                )}
+              </div>
+            ))}
         </nav>
       </div>
       <div className="p-4 border-t border-zinc-200/50 dark:border-zinc-800/50 mt-auto">
@@ -132,6 +162,14 @@ export default function Sidebar() {
           <ThemeToggle />
         </div>
       </div>
+      <Button
+        variant="ghost"
+        onClick={handleLogout}
+        className="w-full justify-start"
+      >
+        <LogOut className="mr-2 h-4 w-4" />
+        Sair
+      </Button>
     </div>
   );
 
@@ -171,6 +209,7 @@ interface MenuItemProps {
   path: string;
   isActive: boolean;
   onClick?: () => void;
+  show: boolean;
 }
 
 function MenuItem({
@@ -179,7 +218,10 @@ function MenuItem({
   path,
   isActive,
   onClick,
+  show,
 }: MenuItemProps) {
+  if (!show) return null;
+
   return (
     <Link to={path} onClick={onClick}>
       <Button

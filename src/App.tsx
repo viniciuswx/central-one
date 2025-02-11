@@ -16,6 +16,11 @@ import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
 import { RegistroPresenca } from "@/components/presenca/RegistroPresenca";
 import { AniversariantesList } from "@/components/aniversariantes/AniversariantesList";
 import { Card, CardContent } from "@/components/ui/card";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { PrivateRoute } from "@/components/PrivateRoute";
+import Login from "@/pages/Login";
+import { RoleRoute } from "@/components/RoleRoute";
+import Admin from "@/pages/Admin";
 
 function ErrorFallback({ error }: { error: Error }) {
   return (
@@ -31,41 +36,102 @@ function ErrorFallback({ error }: { error: Error }) {
 export default function App() {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-        <FirebaseProvider>
-          <Router>
-            <div className="relative min-h-screen">
-              <Sidebar />
-              <div className="lg:ml-64 min-h-screen">
-                <div className="container mx-auto p-4 md:p-8 pt-16 lg:pt-4">
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route
-                      path="/visitantes/cadastro"
-                      element={<CadastroVisitante />}
-                    />
-                    <Route
-                      path="/visitantes/lista"
-                      element={<ListaVisitantes />}
-                    />
-                    <Route
-                      path="/membros/cadastro"
-                      element={<CadastroMembro />}
-                    />
-                    <Route path="/membros/lista" element={<ListaMembros />} />
-                    <Route path="/presenca" element={<RegistroPresenca />} />
-                    <Route
-                      path="/aniversariantes"
-                      element={<AniversariantesList />}
-                    />
-                  </Routes>
-                </div>
-              </div>
-            </div>
-          </Router>
-          <Toaster />
-        </FirebaseProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <FirebaseProvider>
+            <Router>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route
+                  path="/*"
+                  element={
+                    <PrivateRoute>
+                      <div className="relative min-h-screen">
+                        <Sidebar />
+                        <div className="lg:ml-64 min-h-screen">
+                          <div className="container mx-auto p-4 md:p-8 pt-16 lg:pt-4">
+                            <Routes>
+                              <Route
+                                path="/"
+                                element={
+                                  <PrivateRoute>
+                                    <RoleRoute requiredRole="lider">
+                                      <Home />
+                                    </RoleRoute>
+                                  </PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path="/visitantes/cadastro"
+                                element={
+                                  <PrivateRoute>
+                                    <RoleRoute requiredRole="voluntario">
+                                      <CadastroVisitante />
+                                    </RoleRoute>
+                                  </PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path="/visitantes/lista"
+                                element={
+                                  <PrivateRoute>
+                                    <RoleRoute requiredRole="lider">
+                                      <ListaVisitantes />
+                                    </RoleRoute>
+                                  </PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path="/membros/cadastro"
+                                element={<CadastroMembro />}
+                              />
+                              <Route
+                                path="/membros/lista"
+                                element={
+                                  <PrivateRoute>
+                                    <RoleRoute requiredRole="lider">
+                                      <ListaMembros />
+                                    </RoleRoute>
+                                  </PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path="/presenca"
+                                element={<RegistroPresenca />}
+                              />
+                              <Route
+                                path="/aniversariantes"
+                                element={
+                                  <PrivateRoute>
+                                    <RoleRoute requiredRole="lider">
+                                      <AniversariantesList />
+                                    </RoleRoute>
+                                  </PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path="/admin"
+                                element={
+                                  <PrivateRoute>
+                                    <RoleRoute requiredRole="lider">
+                                      <Admin />
+                                    </RoleRoute>
+                                  </PrivateRoute>
+                                }
+                              />
+                            </Routes>
+                          </div>
+                        </div>
+                      </div>
+                    </PrivateRoute>
+                  }
+                />
+              </Routes>
+            </Router>
+            <Toaster />
+          </FirebaseProvider>
+        </ThemeProvider>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }
