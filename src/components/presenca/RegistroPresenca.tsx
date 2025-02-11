@@ -200,7 +200,7 @@ export function RegistroPresenca() {
           Registro de Presença
         </h1>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          Registre a presença de membros e visitantes
+          Registre a presença de membros.
         </p>
       </div>
 

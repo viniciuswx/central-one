@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { showToast } from "@/components/ui/custom-toast";
-import { Logo } from "@/components/ui/logo";
 import { useAuth } from "@/contexts/AuthContext";
+import logoCO from "@/assets/centralone.jpg";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -41,11 +41,11 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-sm">
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 flex flex-col justify-center items-center">
           <div className="text-center mb-8">
-            <Logo />
+            <img src={logoCO} className="w-24 h-24 rounded-full" />
           </div>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4 w-full">
             <div className="space-y-2">
               <Input
                 type="email"

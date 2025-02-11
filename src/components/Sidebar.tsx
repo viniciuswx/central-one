@@ -165,7 +165,7 @@ export default function Sidebar() {
       <Button
         variant="ghost"
         onClick={handleLogout}
-        className="w-full justify-start"
+        className=" justify-start mb-3 mx-3"
       >
         <LogOut className="mr-2 h-4 w-4" />
         Sair
