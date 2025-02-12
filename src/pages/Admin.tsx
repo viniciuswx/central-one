@@ -103,7 +103,7 @@ export default function Admin() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-medium tracking-tight">
+        <h1 className="text-3xl font-medium tracking-tight mt-6">
           Administração de Usuários
         </h1>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">

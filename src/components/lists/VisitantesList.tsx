@@ -243,7 +243,7 @@ export default function VisitantesList() {
     <div className="space-y-6">
       <div className="space-y-4">
         <div>
-          <h1 className="text-3xl font-medium tracking-tight text-zinc-900 dark:text-zinc-100">
+          <h1 className="text-3xl font-medium tracking-tight text-zinc-900 dark:text-zinc-100 mt-6">
             Lista de Visitantes
           </h1>
           <p className="mt-2 text-zinc-600 dark:text-zinc-400">
