@@ -411,7 +411,6 @@ export default function MembroForm({
                     Email
                   </Label>
                   <Input
-                    required
                     id="email"
                     name="email"
                     value={formData.email}

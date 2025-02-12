@@ -265,7 +265,6 @@ export default function VisitanteForm() {
                     Email
                   </Label>
                   <Input
-                    required
                     id="email"
                     name="email"
                     value={formData.email}
