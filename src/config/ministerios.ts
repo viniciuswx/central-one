@@ -10,4 +10,6 @@ export const MINISTERIOS = [
   { value: "diaconato", label: "Diaconato" },
   { value: "kids", label: "Kids" },
   { value: "libras", label: "Libras" },
+  { value: "casaPaz", label: "Casa de Paz" },
+  { value: "cenic", label: "Central Cenic" },
 ] as const;

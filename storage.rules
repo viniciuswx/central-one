@@ -5,8 +5,23 @@ rules_version = '2';
 //    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
 service firebase.storage {
   match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read, write: if false;
+    // Função auxiliar para verificar autenticação
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Função para verificar se é líder
+    function isLider() {
+      return isAuthenticated() && 
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'lider';
+    }
+
+    // Regras para fotos de membros
+    match /membros/{membroId}/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && 
+        request.resource.size < 5 * 1024 * 1024 && // Máximo 5MB
+        request.resource.contentType.matches('image/.*'); // Apenas imagens
     }
   }
 }

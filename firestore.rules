@@ -2,18 +2,43 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Funções auxiliares
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isLider() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'lider';
+    }
+    
+    function isVoluntario() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'voluntario';
+    }
 
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2025, 3, 11);
+    // Regras para coleção users
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isLider());
+      allow create: if isLider();
+      allow update: if isLider();
+      allow delete: if isLider();
+    }
+
+    // Regras para coleção membros
+    match /membros/{membroId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isLider();
+      allow delete: if isLider();
+    }
+
+    // Regras para coleção visitantes
+    match /visitantes/{visitanteId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isLider();
     }
   }
 }
